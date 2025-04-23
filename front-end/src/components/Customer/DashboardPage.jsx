@@ -1,10 +1,10 @@
-import { motion } from 'framer-motion'
-import { useAuth } from '../../context/AuthContext'
-import { StarIcon } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import { getOrders } from '../../services/apis'
 import { Link } from 'react-router-dom'
+import { motion } from 'framer-motion'
+import { StarIcon } from 'lucide-react'
 import { encrypt } from '../../utils/cryptoUtils'
+import { useUser } from '../auth/useUser'
+import { useWorkers } from './useWorkers'
+import { useOrders } from './useOrders'
 import OrderStats from './OrderStats'
 
 const VITE_API_URL = import.meta.env.VITE_API_URL
@@ -19,22 +19,16 @@ const skills = [
 ]
 
 const DashboardPage = () => {
-    const { user, workers } = useAuth()
-    const [orders, setOrders] = useState([])
+    const { user } = useUser()
+    const { orders } = useOrders()
+    const { workers } = useWorkers()
 
-    useEffect(() => {
-        getOrders().then((data) => {
-            setOrders(data.data.orders)
-        })
-    }, [])
-
-    // Group workers by skill
     const groupedWorkers = skills.reduce((acc, skill) => {
-        const workersForSkill = workers.filter(
+        const workersForSkill = workers?.filter(
             (worker) => worker.skill === skill,
         )
         // Find the worker with the maximum years of experience for each skill
-        const topWorker = workersForSkill.reduce((maxWorker, worker) => {
+        const topWorker = workersForSkill?.reduce((maxWorker, worker) => {
             return worker.yearsOfExperience > maxWorker.yearsOfExperience
                 ? worker
                 : maxWorker
@@ -42,7 +36,7 @@ const DashboardPage = () => {
 
         acc[skill] = topWorker
         return acc
-    }, {}) // Starting with an empty object
+    }, {})
 
     return (
         <div className="space-y-8">
@@ -78,7 +72,7 @@ const DashboardPage = () => {
                     >
                         <Link
                             key={skill}
-                            to={`/customer-dashboard/worker/${encodeURIComponent(encrypt(groupedWorkers[skill].id))}`}
+                            to={`/customer-dashboard/worker/${encodeURIComponent(encrypt(groupedWorkers[skill]?.id))}`}
                             className="flex w-full items-center justify-between rounded-lg p-6 shadow-md hover:shadow-lg dark:border dark:border-gray-600 sm:gap-4"
                         >
                             <motion.img

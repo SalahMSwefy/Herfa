@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { getOrders, updateOrderStatus } from '../../services/apis'
 
 const OrdersPage = () => {
     const [orders, setOrders] = useState([])

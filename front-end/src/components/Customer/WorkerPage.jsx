@@ -2,12 +2,6 @@ import { useLocation, useParams } from 'react-router-dom'
 import { useAuth } from '../../context/AuthContext'
 import { decrypt } from '../../utils/cryptoUtils'
 import { useEffect, useState } from 'react'
-import {
-    createReview,
-    getReviews,
-    makeOrder,
-    updateMyReview,
-} from '../../services/apis'
 import TestimonialCard from '../../ui/TestimonialCard'
 import { CalendarArrowUp, Star } from 'lucide-react'
 

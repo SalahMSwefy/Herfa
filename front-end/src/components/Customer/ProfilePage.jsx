@@ -1,9 +1,7 @@
 import { useEffect, useState, useRef } from 'react'
-import { useAuth } from '../../context/AuthContext'
-import { isValidEmail, isValidPhoneNumber } from '../../utils/helper'
-import { updateMe, uploadPictureCustomer } from '../../services/apis'
 import { Form } from 'react-router-dom'
 import { motion } from 'framer-motion'
+import { useUser } from '../auth/useUser'
 
 const VITE_API_URL = import.meta.env.VITE_API_URL
 
@@ -11,7 +9,7 @@ const ProfilePage = () => {
     const [isEditing, setIsEditing] = useState(false)
     const [newData, setNewData] = useState({})
     const [errors, setErrors] = useState({})
-    const { allUsers: users, updateUser, user } = useAuth()
+    const { user } = useUser()
     const fileInputRef = useRef(null)
 
     useEffect(() => {
@@ -35,62 +33,22 @@ const ProfilePage = () => {
         }))
     }
 
-    const handlePhotoUpload = async (file) => {
-        try {
-            const formData = new FormData()
-            formData.append('photo', file)
+    // const handlePhotoUpload = async (file) => {
+    //     try {
+    //         const formData = new FormData()
+    //         formData.append('photo', file)
 
-            const response = await uploadPictureCustomer(formData)
-            console.log(response.data.updated_user)
-            updateUser({ ...user, image: response.data.updated_user.image })
-        } catch (error) {
-            setErrors((prev) => ({
-                ...prev,
-                general:
-                    'Photo upload failed. Please try again.' + error.message,
-            }))
-        }
-    }
-
-    const handleSubmit = async (e) => {
-        e.preventDefault()
-        const validationErrors = {}
-        if (
-            !isValidEmail(newData.email, users) &&
-            newData.email !== user.email
-        ) {
-            validationErrors.email = 'Invalid email or email already exists'
-        }
-
-        if (
-            !isValidPhoneNumber(newData.phoneNumber, users) &&
-            newData.phoneNumber !== user.phoneNumber
-        ) {
-            validationErrors.phoneNumber =
-                'Invalid phone number or phone number already exists'
-        }
-
-        if (Object.keys(validationErrors).length > 0) {
-            setErrors(validationErrors)
-            return
-        }
-
-        try {
-            await updateMe(newData).then((data) => {
-                updateUser(data.data.user)
-                setErrors({})
-                setIsEditing(false)
-            })
-
-            const file = fileInputRef.current?.files[0]
-            if (file) await handlePhotoUpload(file)
-        } catch (error) {
-            setErrors((prev) => ({
-                ...prev,
-                general: 'Update failed. Please try again.' + error.message,
-            }))
-        }
-    }
+    //         const response = await uploadPictureCustomer(formData)
+    //         console.log(response.data.updated_user)
+    //         updateUser({ ...user, image: response.data.updated_user.image })
+    //     } catch (error) {
+    //         setErrors((prev) => ({
+    //             ...prev,
+    //             general:
+    //                 'Photo upload failed. Please try again.' + error.message,
+    //         }))
+    //     }
+    // }
 
     return (
         <motion.div
@@ -137,7 +95,6 @@ const ProfilePage = () => {
                 </div>
                 {isEditing ? (
                     <Form
-                        onSubmit={handleSubmit}
                         method="patch"
                         className="space-y-4"
                         encType="multipart/form-data"

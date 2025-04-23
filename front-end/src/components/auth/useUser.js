@@ -3,15 +3,11 @@ import { getMyAccount } from '../../services/apiAuth'
 
 export function useUser() {
     const isAuth = Boolean(localStorage.getItem('token'))
-    const {
-        data: user,
-        error,
-        isLoading,
-    } = useQuery({
+    const { data, error, isLoading } = useQuery({
         queryKey: ['user'],
         queryFn: getMyAccount,
         enabled: isAuth,
     })
-
+    const user = data?.data?.data
     return { user, error, isLoading, isAuth }
 }

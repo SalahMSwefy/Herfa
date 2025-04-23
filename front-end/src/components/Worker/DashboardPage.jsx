@@ -1,44 +1,16 @@
 import { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
 import TestimonialCard from '../../ui/TestimonialCard'
 import { motion } from 'framer-motion'
 import { Clock, CircleCheck, Star, Calendar, X } from 'lucide-react'
-import { getOrders, getReviews } from '../../services/apis'
 import { useNavigate } from 'react-router-dom'
+import { useUser } from '../auth/useUser'
 
 const DashboardPage = () => {
-    const { user } = useAuth()
+    const { user } = useUser()
     const navigate = useNavigate()
     const [reviews, setReview] = useState([])
     const [orders, setOrders] = useState([])
     const [allOrders, setAllOrders] = useState([])
-
-    useEffect(() => {
-        getOrders().then((data) => {
-            if (data.data.orders && data.data.orders.length > 0) {
-                setOrders(data.data.orders.slice(0, 3)) // Get the first three orders
-            } else {
-                setOrders([]) // Set an empty array if there are no orders
-            }
-            setAllOrders(data.data.orders)
-        })
-    }, [])
-
-    useEffect(() => {
-        getReviews(user.id)
-            .then((data) => {
-                if (data.data.data.length < 3) {
-                    setReview(data.data.data)
-                } else {
-                    setReview([
-                        data.data.data[0],
-                        data.data.data[1],
-                        data.data.data[2],
-                    ])
-                }
-            })
-            .catch((error) => console.error('Error fetching reviews:', error))
-    }, [user.id])
 
     return (
         <motion.div

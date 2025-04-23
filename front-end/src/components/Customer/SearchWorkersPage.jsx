@@ -1,15 +1,15 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
-import { useAuth } from '../../context/AuthContext'
 import { Link } from 'react-router-dom' // Import Link
 import { encrypt } from '../../utils/cryptoUtils'
 import { StarIcon } from 'lucide-react'
+import { useWorkers } from './useWorkers'
 
 const VITE_API_URL = import.meta.env.VITE_API_URL
 
 const SearchWorkersPage = () => {
-    const { workers } = useAuth()
-
+    const { workers } = useWorkers()
+    const [currentPage, setCurrentPage] = useState(1)
     const [workersPerPage, setWorkersPerPage] = useState(9)
 
     useEffect(() => {
@@ -32,8 +32,6 @@ const SearchWorkersPage = () => {
             window.removeEventListener('resize', handleResize)
         }
     }, [])
-
-    const [currentPage, setCurrentPage] = useState(1)
 
     // Filter state
     const [workerName, setWorkerName] = useState('')

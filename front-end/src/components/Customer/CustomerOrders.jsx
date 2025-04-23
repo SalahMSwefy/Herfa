@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { SquareX, SquareCheck, Star, ArchiveX } from 'lucide-react'
 import { motion } from 'framer-motion'
-import { getOrders, updateOrderStatus } from '../../services/apis'
 import { Link } from 'react-router-dom'
 import { encrypt } from '../../utils/cryptoUtils'
 
